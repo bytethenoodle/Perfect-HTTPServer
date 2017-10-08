@@ -22,14 +22,14 @@ class PerfectHTTPServerTests: XCTestCase {
 		let b = Bytes()
 		
 		let headers = [
-//			(":method", "POST"),
-//			(":scheme", "https"),
-//			(":path", "/3/device/00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0"),
-//			("host", "api.development.push.apple.com"),
-//			("apns-id", "eabeae54-14a8-11e5-b60b-1697f925ec7b"),
-//			("apns-expiration", "0"),
-//			("apns-priority", "10"),
-//			("content-length", "33"),
+			(":method", "POST"),
+			(":scheme", "https"),
+			(":path", "/3/device/00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0"),
+			("host", "api.development.push.apple.com"),
+			("apns-id", "eabeae54-14a8-11e5-b60b-1697f925ec7b"),
+			("apns-expiration", "0"),
+			("apns-priority", "10"),
+			("content-length", "33"),
 			("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/603.2.4 (KHTML, like Gecko) Version/10.1.1 Safari/603.2.4")]
 		do {
 			for (n, v) in headers {
@@ -214,6 +214,23 @@ class PerfectHTTPServerTests: XCTestCase {
 		connection.path = path
 		XCTAssertEqual(connection.path, "/pathA/pathB/path%20c/")
 		XCTAssertEqual(connection.pathComponents, ["/", "pathA", "pathB", "path c", "/"])
+	}
+	
+	func testWebRequestPath4() {
+		let connection = ShimHTTPRequest()
+		let fullHeaders = "GET /?a=b&c=d%20e HTTP/1.1\r\nX-Foo: bar\r\nX-Bar: \r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n"
+		
+		XCTAssert(false == connection.didReadSomeBytes(Array(fullHeaders.utf8)) {
+			ok in
+			
+			guard case .ok = ok else {
+				return XCTAssert(false, "\(ok)")
+			}
+			XCTAssertEqual(connection.path, "/")
+			XCTAssertEqual(connection.pathComponents, ["/"])
+			XCTAssert(connection.param(name: "a") == "b")
+			XCTAssert(connection.param(name: "c") == "d e")
+			})
 	}
 	
 	func testSimpleHandler() {
@@ -1084,6 +1101,7 @@ class PerfectHTTPServerTests: XCTestCase {
 			("testWebRequestPath1", testWebRequestPath1),
 			("testWebRequestPath2", testWebRequestPath2),
 			("testWebRequestPath3", testWebRequestPath3),
+			("testWebRequestPath4", testWebRequestPath4),
 			("testSimpleHandler", testSimpleHandler),
 			("testSimpleStreamingHandler", testSimpleStreamingHandler),
 			("testSlowClient", testSlowClient),
