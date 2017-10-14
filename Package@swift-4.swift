@@ -26,8 +26,8 @@ let package = Package(
         .library(name: "PerfectHTTPServer", targets: ["PerfectHTTPServer"])
     ],
     dependencies: [
-        .package(url: "https://github.com/bytethenoodle/Perfect-Net.git", .upToNextMajor(from: "3.0.1")),
-        .package(url: "https://github.com/bytethenoodle/Perfect-HTTP.git", .upToNextMajor(from: "3.0.1"))
+        .package(url: "https://github.com/bytethenoodle/Perfect-Net.git", .upToNextMajor(from: "3.0.2")),
+        .package(url: "https://github.com/bytethenoodle/Perfect-HTTP.git", .upToNextMajor(from: "3.0.2"))
     ],
     targets: [
         .target(name: "PerfectCHTTPParser",
